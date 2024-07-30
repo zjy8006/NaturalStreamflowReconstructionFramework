@@ -1,5 +1,7 @@
 # Codes for article "An extension approach for naturalizing streamflow based on long short-term memory by excluding liner related driving factors"
 
+The Pettitt test and Mann-Kendall test programs developed by Md. Manjurul Hussain Shourov were revised by this study to delineate the pre-influence and influence periods. Sincere gratitude is extended to Mr. Shourov.
+
 ## mutation detection
 
 HomogeneityTest.py
