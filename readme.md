@@ -2,7 +2,9 @@
 
 The Pettitt test and Mann-Kendall test programs developed by Md. Manjurul Hussain Shourov were revised by this study to delineate the pre-influence and influence periods. Sincere gratitude is extended to Mr. Shourov.
 
-
+## Sample data
+full_modelling_data.csv - samples for establishing streamflow naturalization model
+nature_flow.csv - Evaluated natureal streamflow by the Ministry of Water Resources of the People's Republic of China for validate the model
 
 ## mutation detection
 
