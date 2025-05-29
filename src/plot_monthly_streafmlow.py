@@ -8,12 +8,19 @@ guide_monthly_flow = pd.read_csv('D:/ResearchSpace/NaturalStreamflowReconstructi
 xunhuan_monthly_flow = pd.read_csv('D:/ResearchSpace/NaturalStreamflowReconstructionFramework/data/xunhua_monthly_flow.csv',parse_dates=['date'],index_col='date')
 
 # select data from "1957-01-01" to "2018-12-01"
-tangnaihai_monthly_flow = tangnaihai_monthly_flow.loc['1957-01-01':'2018-12-31']
-guide_monthly_flow = guide_monthly_flow.loc['1957-01-01':'2018-12-31']
-xunhuan_monthly_flow = xunhuan_monthly_flow.loc['1957-01-01':'2018-12-31']
+# Sort index first to ensure monotonic
+tangnaihai_monthly_flow = tangnaihai_monthly_flow.sort_index()
+guide_monthly_flow = guide_monthly_flow.sort_index() 
+xunhuan_monthly_flow = xunhuan_monthly_flow.sort_index()
+
+tangnaihai_monthly_flow = tangnaihai_monthly_flow.loc['1957-01-01':'2019-12-31']
+guide_monthly_flow = guide_monthly_flow.loc['1957-01-01':'2019-12-31']
+xunhuan_monthly_flow = xunhuan_monthly_flow.loc['1957-01-01':'2019-12-31']
 
 
-fig = plt.figure(figsize=(7.48,5.5))
+plt.rcParams.update({'font.size': 8})
+
+fig = plt.figure(figsize=(7.48,5.0))
 ax11 = fig.add_subplot(3,1,1)
 ax12 = fig.add_subplot(3,1,2)
 ax13 = fig.add_subplot(3,1,3)

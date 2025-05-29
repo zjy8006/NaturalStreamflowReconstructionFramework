@@ -53,6 +53,6 @@ ax22.set_xlabel('')
 # ax32.legend(loc='lower left', ncol=3,shadow=False,frameon=False)
 
 plt.subplots_adjust(left=0.07, bottom=0.06, right=0.99,top=0.96, hspace=0.35, wspace=0.2)
-plt.savefig('D:/ResearchSpace/NaturalStreamflowReconstructionFramework/figs/mutation_detection.eps',format='EPS',dpi=2000,transparent=True,bbox_inches='tight')
+plt.savefig('figs/mutation_detection.eps',format='EPS',dpi=2000,transparent=True,bbox_inches='tight')
 
 plt.show()

@@ -10,7 +10,7 @@ def compute_VIF(X):
     vif_data =vif_data.sort_values(by='VIF',ascending=False,ignore_index=True)
     return vif_data
 
-def recursive_compute_VIF(X_):
+def recursive_compute_VIF(X_,temp_path):
     full_ = {}
     for feature in X_.columns:
         full_[feature] = []
@@ -26,8 +26,8 @@ def recursive_compute_VIF(X_):
             infos.append(info)
         info_df = pd.DataFrame(infos,columns=['fe(VIF),i='+str(index)])
         df = pd.concat([df,info_df],axis=1)
-        df.to_csv('temp/vif.csv')
-        info_df.to_csv('temp/tnh_mete_vif_it'+str(index)+'.csv',index=None)
+        df.to_csv(temp_path+'/vif.csv')
+        info_df.to_csv(temp_path+'/tnh_mete_vif_it'+str(index)+'.csv',index=None)
         index = index+1
         for col in X_.columns:
             if col in vif_data['feature']:
@@ -41,8 +41,11 @@ def recursive_compute_VIF(X_):
             compute(X,df,index)
         else:
             print(list(vif_data['feature'].values))
-    
-    compute(X_)
+            selected_features = list(vif_data['feature'].values)
+            return selected_features
+
+    selected_features = compute(X_)
+    return selected_features
 
 
 

@@ -29,11 +29,11 @@ plot_template = dict(
 import os
 import sys
 sys.path.append('.') # add parent path to sys.path
-from HydroPy.Preprocessing.OneShotSamplesGenerator import gen_one_out_samples
-from HydroPy.Preprocessing.SamplesSpliter import calibration_test_split
-from HydroPy.Preprocessing.Normalizer import StandardScale,MinMaxScale,MaxAbsScale
-from HydroPy.DataTools.Dataset import SequenceDataset
-from HydroPy.NeuralNetwork.EarlyStopping import EarlyStopping
+from OneShotSamplesGenerator import gen_one_out_samples
+from SamplesSpliter import calibration_test_split
+from Normalizer import StandardScale,MinMaxScale,MaxAbsScale
+from Dataset import SequenceDataset
+from EarlyStopping import EarlyStopping
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -645,71 +645,72 @@ class Objective_CV:
             
 
 if __name__ == '__main__':
-    # !Get time series data
-    df = pd.read_csv('data/ZhangjiashanRunoffVMD.csv', index_col=['time'], parse_dates=['time'],date_format="%b-%y")
+    pass
+    # # !Get time series data
+    # df = pd.read_csv('data/ZhangjiashanRunoffVMD.csv', index_col=['time'], parse_dates=['time'],date_format="%b-%y")
 
-    target_name = 'R'
+    # target_name = 'R'
 
-    test_start_index = df.index[int(df.shape[0] * (1-0.2))]
+    # test_start_index = df.index[int(df.shape[0] * (1-0.2))]
 
-    df_train = df.loc[df.index < test_start_index].copy()
-    df_test = df.loc[df.index >= test_start_index].copy()
+    # df_train = df.loc[df.index < test_start_index].copy()
+    # df_test = df.loc[df.index >= test_start_index].copy()
 
-    target_mean = df_train[target_name].mean()
-    target_std = df_train[target_name].std()
+    # target_mean = df_train[target_name].mean()
+    # target_std = df_train[target_name].std()
 
-    for c in df_train.columns:
-        mean = df_train[c].mean()
-        std = df_train[c].std()
+    # for c in df_train.columns:
+    #     mean = df_train[c].mean()
+    #     std = df_train[c].std()
 
-        df_train[c] = (df_train[c] - mean) / std
-        df_test[c] = (df_test[c] - mean) / std
+    #     df_train[c] = (df_train[c] - mean) / std
+    #     df_test[c] = (df_test[c] - mean) / std
 
-    # !Train and validate the the Pytorch LSTM model without optuna and cross validation
-
-
-    # !Tune the hyperparameters of pytorch lstm without cross validation
-    # Define a optuna obejctive object to tune hyperparameters
-    objective = Objective(
-        train_dataframe=df_train,
-        val_dataframe=df_test,
-        target_name=target_name,
-        leadtime=1,
-        sequence_length=6,
-        num_epoch=1000,
-        batch_size=64,
-        shuffle=True,
-        model_path='./scheme/LSTMRegressor/',
-    )
-    study = optuna.create_study(
-        study_name='example-study',
-        direction='minimize',
-    )
-    study.optimize(objective, n_trials=5)
-
-    pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])
-    complete_trials = study.get_trials(deepcopy=False, states=[TrialState.COMPLETE])
+    # # !Train and validate the the Pytorch LSTM model without optuna and cross validation
 
 
-    print("Study statistics: ")
-    print("  Number of finished trials: ", len(study.trials))
-    print("  Number of pruned trials: ", len(pruned_trials))
-    print("  Number of complete trials: ", len(complete_trials))
+    # # !Tune the hyperparameters of pytorch lstm without cross validation
+    # # Define a optuna obejctive object to tune hyperparameters
+    # objective = Objective(
+    #     train_dataframe=df_train,
+    #     val_dataframe=df_test,
+    #     target_name=target_name,
+    #     leadtime=1,
+    #     sequence_length=6,
+    #     num_epoch=1000,
+    #     batch_size=64,
+    #     shuffle=True,
+    #     model_path='./scheme/LSTMRegressor/',
+    # )
+    # study = optuna.create_study(
+    #     study_name='example-study',
+    #     direction='minimize',
+    # )
+    # study.optimize(objective, n_trials=5)
 
-    print("Best trial:")
-    trial = study.best_trial
+    # pruned_trials = study.get_trials(deepcopy=False, states=[TrialState.PRUNED])
+    # complete_trials = study.get_trials(deepcopy=False, states=[TrialState.COMPLETE])
 
-    best_model_state = trial.user_attrs["best_model_state"]
+
+    # print("Study statistics: ")
+    # print("  Number of finished trials: ", len(study.trials))
+    # print("  Number of pruned trials: ", len(pruned_trials))
+    # print("  Number of complete trials: ", len(complete_trials))
+
+    # print("Best trial:")
+    # trial = study.best_trial
+
+    # best_model_state = trial.user_attrs["best_model_state"]
     # plot_train_val_loss_cv(
     #     trial.user_attrs["train_loss_df"],
     #     trial.user_attrs["val_loss_df"],
     # )
 
-    print("  Value: ", trial.value)
+    # print("  Value: ", trial.value)
 
-    print("  Params: ")
-    for key, value in trial.params.items():
-        print("    {}: {}".format(key, value))
+    # print("  Params: ")
+    # for key, value in trial.params.items():
+    #     print("    {}: {}".format(key, value))
 
 
     # The line of the resumed trial's intermediate values begins with the restarted epoch.
@@ -717,41 +718,41 @@ if __name__ == '__main__':
     # optuna.visualization.plot_intermediate_values(study).show()
 
 
-    save_model(trial,model_path='./scheme/DNNRegressor/')
+    # save_model(trial,model_path='./scheme/DNNRegressor/')
 
-    model = load_model(model_file='./scheme/DNNRegressor/model.pickle').to(DEVICE)
+    # model = load_model(model_file='./scheme/DNNRegressor/model.pickle').to(DEVICE)
 
-    cal_dataset = SequenceDataset(
-        dataframe=df_train,
-        target=target_name,
-        features=list(df_train.columns.difference([target_name])),
-        lead_time=1,
-        sequence_length=6,
-    )
-    test_dataset = SequenceDataset(
-        dataframe=df_test,
-        target=target_name,
-        features=list(df_test.columns.difference([target_name])),
-        lead_time=1,
-        sequence_length=6,
-    )
+    # cal_dataset = SequenceDataset(
+    #     dataframe=df_train,
+    #     target=target_name,
+    #     features=list(df_train.columns.difference([target_name])),
+    #     lead_time=1,
+    #     sequence_length=6,
+    # )
+    # test_dataset = SequenceDataset(
+    #     dataframe=df_test,
+    #     target=target_name,
+    #     features=list(df_test.columns.difference([target_name])),
+    #     lead_time=1,
+    #     sequence_length=6,
+    # )
     
 
-    cal_y_pred = predict(DataLoader(cal_dataset), model).cpu()
-    test_y_pred = predict(DataLoader(test_dataset), model).cpu()
+    # cal_y_pred = predict(DataLoader(cal_dataset), model).cpu()
+    # test_y_pred = predict(DataLoader(test_dataset), model).cpu()
 
-    # Renoemalize the prediction and target
-    cal_y_pred = cal_y_pred * target_std + target_mean
-    test_y_pred = test_y_pred * target_std + target_mean
-    cal_dataset.y = cal_dataset.y.cpu() * target_std + target_mean
-    test_dataset.y = test_dataset.y.cpu() * target_std + target_mean
+    # # Renoemalize the prediction and target
+    # cal_y_pred = cal_y_pred * target_std + target_mean
+    # test_y_pred = test_y_pred * target_std + target_mean
+    # cal_dataset.y = cal_dataset.y.cpu() * target_std + target_mean
+    # test_dataset.y = test_dataset.y.cpu() * target_std + target_mean
 
-    print(r2_score(cal_dataset.y, cal_y_pred))
-    print(r2_score(test_dataset.y, test_y_pred))
+    # print(r2_score(cal_dataset.y, cal_y_pred))
+    # print(r2_score(test_dataset.y, test_y_pred))
 
-    plot_predictions(cal_y_pred,cal_dataset.y,test_y_pred,test_dataset.y,df_train.index,df_test.index)
+    # plot_predictions(cal_y_pred,cal_dataset.y,test_y_pred,test_dataset.y,df_train.index,df_test.index)
 
-    plot_observed_forecasted_scatters(cal_y_pred,cal_dataset.y,test_y_pred,test_dataset.y,df_train.index,df_test.index)
+    # plot_observed_forecasted_scatters(cal_y_pred,cal_dataset.y,test_y_pred,test_dataset.y,df_train.index,df_test.index)
 
         # print('train_dataset.y.shape[1]',train_dataset.y.shape[1])
 

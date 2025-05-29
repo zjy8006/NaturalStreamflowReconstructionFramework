@@ -60,7 +60,7 @@ def gen_one_out_samples(timeseries:pd.DataFrame, target_column:str,lead:int,lag:
         samples = pd.concat([samples, target], axis=1)
         samples = samples.set_index(time_index,drop=True)
         target_name = target.columns[0]
-        features_names = list(samples.columns.difference([target_name]))
+        features_names = [col for col in samples.columns if col != target_name]
     
         
     elif mode == 'simulate':
@@ -86,7 +86,8 @@ def gen_one_out_samples(timeseries:pd.DataFrame, target_column:str,lead:int,lag:
         samples = pd.concat([samples, target], axis=1)
         samples = samples.set_index(time_index,drop=True)
         target_name = target.columns[0]
-        features_names = list(samples.columns.difference([target_name]))
+        # Keep original order of columns, just remove target column
+        features_names = [col for col in samples.columns if col != target_name]
 
     return samples,target_name,features_names
 
